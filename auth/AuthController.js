@@ -32,7 +32,7 @@ router.post('/login', function(req, res) {
     });
 
     // return the information including token as JSON
-    res.status(200).send({ auth: true, token: token });
+    res.status(200).send({ id : user._id ,auth: true, token: token });
   });
 
 });
@@ -59,7 +59,7 @@ router.post('/register', function(req, res) {
       expiresIn: 86400 // expires in 24 hours
     });
 
-    res.status(200).send({ auth: true, token: token });
+    res.status(200).send({ id : user._id, auth: true, token: token });
   });
 
 });

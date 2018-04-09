@@ -1,0 +1,28 @@
+Log
+
+Breakdown of things that we are going to build in this session : 
+
+
+1. jwt authentication mechanism
+	
+	=> register page
+	=> login page
+
+	ETC - 2 hours
+
+2. plan the model for the course
+
+	ETC - 1 hour
+
+3. break down the course feature into parts
+
+	for now we can just do it with basic features like name and other stuff
+
+4. make models of quiz,video into the db
+	
+	ETC - 2 hours
+
+5. make api end points for hitting server requests for the course creation.
+
+6. List future API Calls
+
