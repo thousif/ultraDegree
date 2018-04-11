@@ -31,6 +31,10 @@ app.use('/api/auth', AuthController);
 var CourseController = require(__root + 'course/CourseController');
 app.use('/api/course',CourseController);
 
+var CourseChapterController = require(__root + 'course/courseChapterController');
+app.use('/api/crs_chapters',CourseChapterController);
+
+
 app.use(function(req, res, next) {
   next(createError(404));
 });
