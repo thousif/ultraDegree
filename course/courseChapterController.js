@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var VerifyToken = require(__root + 'auth/VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
 var CourseChapter = require('./courseChapters');
 
 function findChapterSequence(course_id, cb){
@@ -56,8 +57,7 @@ router.post('/add', /* VerifyToken, */ function (req, res) {
 });
 
 router.post('/list',function(req,res) {
-    console.log(req.body);
-    CourseChapter.find({ cid : req.body.cid, act : true },function(err,chapters){
+    CourseChapter.find({ act : true },function(err,chapters){
         if(err) return res.status(500).send("Please try again later");
         res.status(200).send(chapters);
     })
@@ -72,7 +72,7 @@ router.post('/delete',function(req,res) {
 })
 
 router.post('/edit', function(req,res) {
-    console.log(req.body);
+    console.log(req);
     var chapter = {
         nm  : req.body.name,
         dsc : req.body.dsc,
