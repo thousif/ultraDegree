@@ -34,6 +34,11 @@ app.use('/api/course',CourseController);
 var CourseChapterController = require(__root + 'course/courseChapterController');
 app.use('/api/crs_chapters',CourseChapterController);
 
+var CourseQuizController = require(__root + 'course/courseQuizController');
+app.use('/api/crs_quiz',CourseQuizController);
+
+var courseLectureController = require(__root + 'course/courseLectureController');
+app.use('/api/crs_lecture',courseLectureController);
 
 app.use(function(req, res, next) {
   next(createError(404));

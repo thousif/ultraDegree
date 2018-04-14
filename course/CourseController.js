@@ -11,6 +11,7 @@ var CourseChapters = require('./courseChapters');
 router.get('/list', /* VerifyToken, */ function (req, res) {
     console.log('fetching all courses from db');
     Course.find({},function (err, course) {
+        console.log(err);
         if (err) return res.status(500).send("There was a problem fetching the courses.");
         res.status(200).send(course);
     });
