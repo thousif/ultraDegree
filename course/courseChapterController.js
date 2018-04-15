@@ -61,17 +61,24 @@ router.post('/add', /* VerifyToken, */ function (req, res) {
 });
 
 router.post('/list',function(req,res) {
-    CourseChapter.find({ act : true }).lean().exec(function(err,chapters){
+    CourseChapter.find({ act : true }).sort({tim : -1}).lean().exec(function(err,chapters){
         if(err) return res.status(500).send("Please try again later");
         res.status(200).send(chapters);
     })
 })
 
-router.get('/:id',function(req,res) {
-    console.log(req.params.id);
-    CourseChapter.findById(req.params.id,function(err,chapter){
+router.post('/open',function(req,res) {
+    console.log(req.body);
+    if(!req.body.cid)  return res.status(400).send("invalid parameters");
+    if(!req.body.ch_id)  return res.status(400).send("invalid parameters");
+    CourseChapter.findOne({
+        cid : req.body.cid,
+        _id : mongoose.Types.ObjectId(req.body.ch_id),
+        act : true
+    },function(err,chapter){
         if(err) return res.status(500).send("please try again later");
         if(!chapter) return res.status(400).send("No such chapter exists");
+        console.log(chapter);
         var data = {
             chapter : chapter,
         }
@@ -143,11 +150,23 @@ router.post('/add_topic', function(req,res) {
     })
 })
 
+router.post('/update_cur', function(req,res) {
+    console.log(req.body);
+    if(!req.body.cid) return res.status(400).send()
+    if(!req.body.ch_id) return res.status(400).send()
+    if(!req.body.cur) return res.status(400).send()
+    CourseChapter.update({cid: req.body.cid, _id : req.body.ch_id},{
+        curriculum : req.body.cur
+    },function(err,updated_package){
+        if(err) return res.status(500).send("Please try again later")
+        res.status(200).send(updated_package);
+    })
+})
 
 function fetchQuizTopics(data,cb){
-    if(data.chapter && data.chapter.quiz && data.chapter.quiz.length > 0){
+    if(data.chapter && data.chapter.curriculum && data.chapter.curriculum.length > 0){
         var quizArr = data.chapter.curriculum.filter(function(topic){
-            return topic.type == 1
+            return parseInt(topic.type) == 1 
         }).map(function(quiz){ return mongoose.Types.ObjectId(quiz.id) });
         CourseQuiz.find({ '_id' : { $in : quizArr } },function(err,quizzes){
             if(err) return cb(err,null);
