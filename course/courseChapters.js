@@ -14,6 +14,7 @@ var coursechapter = new mongoose.Schema(
 		pdf         : { type : Array, required : false, default : []},   // pdfs available at the chapter
 		lnk         : { type : Array, required : false, default : []},   // hyperlinks avaialble at the chapter
 		seq         : { type : Number, required : true },                // sequence number of the chapter 
+		curriculum  : { type : Array, required : false, default : []},
 		tim         : { type : Number, required : true },    
 		act         : { type : Boolean, required : true }     
 	},
