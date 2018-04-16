@@ -6,7 +6,7 @@ var ObjectId 	= Schema.ObjectId;
 var courselecture = new mongoose.Schema(
 	{
 		cid         : { type : ObjectId, required : true },    
-		nm       		: { type : String, required : true },   
+		nm       	: { type : String, required : true },   
 		dsc       	: { type : String, required : true },
 		typ         : { type : Number, required : true, default : 1 },
 		tim         : { type : Number, required : true },    

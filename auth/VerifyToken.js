@@ -10,6 +10,7 @@ function verifyToken(req, res, next) {
 
   // verifies secret and checks exp
   jwt.verify(token, config.secret, function(err, decoded) {      
+    console.log(err);
     if (err) 
       return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });    
 

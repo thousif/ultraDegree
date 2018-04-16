@@ -8,7 +8,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 var Course = require('./Course');
 var CourseChapters = require('./courseChapters');
 
-router.get('/list', /* VerifyToken, */ function (req, res) {
+router.get('/list',  VerifyToken,  function (req, res) {
     console.log('fetching all courses from db');
     Course.find({},function (err, course) {
         console.log(err);
