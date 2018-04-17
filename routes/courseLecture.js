@@ -2,28 +2,28 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 
-var VerifyToken = require(__root + 'auth/VerifyToken');
+var VerifyToken = require('../auth/VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-var Course = require('./Course');
-var CourseQuiz = require('./CourseQuiz');
+var Course = require('../models/course');
+var CourseLecture = require('../models/courseLecture');
 
-router.get('/list', /* VerifyToken, */ function (req, res) {
+router.get('/list',  VerifyToken,  function (req, res) {
     console.log('fetching all quizes from db');
-    CourseQuiz.find({},function (err, quizes) {
+    CourseLecture.find({},function (err, quizes) {
         if (err) return res.status(500).send("There was a problem fetching the quizes.");
         res.status(200).send(quizes);
     });
 });
 
-router.post('/add', function(req,res) {
-    console.log('adding course');
+router.post('/add', VerifyToken, function(req,res) {
+    console.log('adding lecture');
     console.log(req.body);
     if(!req.body.nm) return res.status(400).send('Invalid Parameters');
     if(!req.body.desc) return res.status(400).send('Invalid Parameters');
     if(!req.body.cid) return res.status(400).send('Invalid Parameters');
-    var newQuiz = new CourseQuiz({
+    var newQuiz = new CourseLecture({
         nm   : req.body.nm,
         dsc  : req.body.desc,
         cid  : req.body.cid,

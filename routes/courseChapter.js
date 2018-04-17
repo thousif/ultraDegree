@@ -3,14 +3,14 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var VerifyToken = require(__root + 'auth/VerifyToken');
+var VerifyToken = require('../auth/VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-var CourseChapter = require('./courseChapters');
-var CourseQuiz = require('./CourseQuiz');
-var CourseLecture = require('./courseLecture');
+var CourseChapter = require('../models/courseChapters');
+var CourseQuiz = require('../models/courseQuiz');
+var CourseLecture = require('../models/courseLecture');
 
 function findChapterSequence(course_id, cb){
   console.log(course_id);
@@ -34,7 +34,7 @@ function findChapterSequence(course_id, cb){
   });
 }
 
-router.post('/add', /* VerifyToken, */ function (req, res) {
+router.post('/add',  VerifyToken,  function (req, res) {
 
     console.log(req.body);
     findChapterSequence(req.body.cid, function(err,seq){
@@ -60,14 +60,14 @@ router.post('/add', /* VerifyToken, */ function (req, res) {
     });
 });
 
-router.post('/list',function(req,res) {
+router.post('/list', VerifyToken, function(req,res) {
     CourseChapter.find({ act : true }).sort({tim : -1}).lean().exec(function(err,chapters){
         if(err) return res.status(500).send("Please try again later");
         res.status(200).send(chapters);
     })
 })
 
-router.post('/open',function(req,res) {
+router.post('/open', VerifyToken, function(req,res) {
     console.log(req.body);
     if(!req.body.cid)  return res.status(400).send("invalid parameters");
     if(!req.body.ch_id)  return res.status(400).send("invalid parameters");
@@ -90,7 +90,7 @@ router.post('/open',function(req,res) {
     })
 })
 
-router.post('/delete',function(req,res) {
+router.post('/delete', VerifyToken, function(req,res) {
     console.log(req.body);
     CourseChapter.update({cid: req.body.cid, _id : req.body.ch_id},{act : false},function(err,updated_package){
         if(err) return res.status(500).send("Please try again later")
@@ -98,7 +98,7 @@ router.post('/delete',function(req,res) {
     })
 })
 
-router.post('/edit', function(req,res) {
+router.post('/edit', VerifyToken, function(req,res) {
     console.log(req);
     var chapter = {
         nm  : req.body.name,
@@ -111,7 +111,7 @@ router.post('/edit', function(req,res) {
     })
 })
 
-router.post('/add_quiz', function(req,res) {
+router.post('/add_quiz', VerifyToken, function(req,res) {
     console.log(req.body);
     if(!req.body.cid) return res.status(400).send()
     if(!req.body.ch_id) return res.status(400).send()
@@ -130,7 +130,7 @@ router.post('/add_quiz', function(req,res) {
     })
 })
 
-router.post('/add_topic', function(req,res) {
+router.post('/add_topic', VerifyToken, function(req,res) {
     console.log(req.body);
     if(!req.body.cid) return res.status(400).send()
     if(!req.body.ch_id) return res.status(400).send()
@@ -150,7 +150,7 @@ router.post('/add_topic', function(req,res) {
     })
 })
 
-router.post('/update_cur', function(req,res) {
+router.post('/update_cur', VerifyToken, function(req,res) {
     console.log(req.body);
     if(!req.body.cid) return res.status(400).send()
     if(!req.body.ch_id) return res.status(400).send()

@@ -6,7 +6,7 @@ var VerifyToken = require('./VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
-var User = require('../user/User');
+var User = require('../models/user');
 
 /**
  * Configure JWT
@@ -18,6 +18,7 @@ var config = require('../config'); // get config file
 router.post('/login', function(req, res) {
 
   User.findOne({ email: req.body.email }, function (err, user) {
+    console.log(req.body);
     if (err) return res.status(500).send('Error on the server.');
     if (!user) return res.status(404).send('No user found.');
     
@@ -27,7 +28,7 @@ router.post('/login', function(req, res) {
 
     // if user is found and password is valid
     // create a token
-    var token = jwt.sign({ id: user._id }, config.secret, {
+    var token = jwt.sign({ id: user._id }, config.SECRET, {
       expiresIn: 86400 // expires in 24 hours
     });
 

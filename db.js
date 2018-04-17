@@ -1,2 +1,3 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://teejay:ultradb@ds139459.mlab.com:39459/ultradegree', { useMongoClient: true });
+var configs = require('./config');
+mongoose.connect(configs.MONGO_URL, { useMongoClient: true });

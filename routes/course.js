@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 
-var VerifyToken = require(__root + 'auth/VerifyToken');
+var VerifyToken = require('../auth/VerifyToken');
 
 router.use(bodyParser.urlencoded({ extended: true }));
-var Course = require('./Course');
-var CourseChapters = require('./courseChapters');
+var Course = require('../models/course');
+var CourseChapters = require('../models/courseChapters');
 
 router.get('/list',  VerifyToken,  function (req, res) {
     console.log('fetching all courses from db');
@@ -17,7 +17,15 @@ router.get('/list',  VerifyToken,  function (req, res) {
     });
 });
 
-router.get('/:id', function (req, res) {
+router.get('/:id', VerifyToken, function (req, res) {
+    console.log(req.params);
+
+    // req.checkParams('id',configs.INVALID_PARAMETERS[1]).notEmpty().isValidMongoId();
+
+    // if(req.validationErrors()){ 
+    //     return res.status(400).send("Invalid parameters");
+    // }
+
     Course.findById(req.params.id, function (err, course) {
         if (err) return res.status(500).send("Please try again Later.");
         if (!course) return res.status(400).send("No such course exists.");
