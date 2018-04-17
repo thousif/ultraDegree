@@ -3,36 +3,13 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-var VerifyToken = require('../auth/VerifyToken');
-
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
+var VerifyToken = require('../auth/VerifyToken');
 var CourseChapter = require('../models/courseChapters');
 var CourseQuiz = require('../models/courseQuiz');
 var CourseLecture = require('../models/courseLecture');
-
-function findChapterSequence(course_id, cb){
-  console.log(course_id);
-  CourseChapter.findOne({
-    course_id : course_id,
-    act       : true
-  },{
-    seq : 1
-  },{
-    sort : {
-      seq : -1
-    }
-  },function(err,chapter){
-    if(err){
-      return cb(err,null);
-    }
-    if(!chapter || !chapter.seq){
-      return cb(null,1);
-    }
-    return cb(null,chapter.seq+1);
-  });
-}
 
 router.post('/add',  VerifyToken,  function (req, res) {
     
@@ -209,6 +186,28 @@ router.post('/update_cur', VerifyToken, function(req,res) {
         res.status(200).send(updated_package);
     })
 })
+
+function findChapterSequence(course_id, cb){
+  console.log(course_id);
+  CourseChapter.findOne({
+    course_id : course_id,
+    act       : true
+  },{
+    seq : 1
+  },{
+    sort : {
+      seq : -1
+    }
+  },function(err,chapter){
+    if(err){
+      return cb(err,null);
+    }
+    if(!chapter || !chapter.seq){
+      return cb(null,1);
+    }
+    return cb(null,chapter.seq+1);
+  });
+}
 
 function fetchQuizTopics(data,cb){
     if(data.chapter && data.chapter.curriculum && data.chapter.curriculum.length > 0){

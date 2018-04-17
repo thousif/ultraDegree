@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 
-var VerifyToken = require('../auth/VerifyToken');
-
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
+
 var Course = require('../models/course');
 var CourseLecture = require('../models/courseLecture');
+var VerifyToken = require('../auth/VerifyToken');
 
 router.get('/list',  VerifyToken,  function (req, res) {
     CourseLecture.find({},function (err, quizes) {

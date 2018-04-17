@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const fs   = require('fs');
 const configs = require('./config');
 const expressValidator = require('express-validator');
+
 // routes
 const course = require('./routes/course');
 const courseChapter = require('./routes/courseChapter');
@@ -12,8 +13,6 @@ const courseLecture = require('./routes/courseLecture');
 const courseQuiz = require('./routes/courseQuiz');
 const user = require('./routes/user');
 const auth = require('./auth/AuthController');
-
-global.__root   = __dirname + '/'; 
 
 const morganLogFullFileName = getMorganLoggerFileName();
 const accessLogStream       = fs.createWriteStream(morganLogFullFileName, {flags: 'a'});
@@ -77,7 +76,6 @@ function getMorganLoggerFileName(){
   var fullFileName      = morganLogDirectory + '/access-'+file_date_ext+'.log';
   return fullFileName;
 }
-
 
 module.exports = app;
 
