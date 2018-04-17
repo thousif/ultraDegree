@@ -35,8 +35,14 @@ function findChapterSequence(course_id, cb){
 }
 
 router.post('/add',  VerifyToken,  function (req, res) {
+    
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
 
-    console.log(req.body);
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     findChapterSequence(req.body.cid, function(err,seq){
         if(err){
             console.trace(err);
@@ -68,7 +74,15 @@ router.post('/list', VerifyToken, function(req,res) {
 })
 
 router.post('/open', VerifyToken, function(req,res) {
-    console.log(req.body);
+    
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('ch_id','invalid parameters').notEmpty().isValidMongoId();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     if(!req.body.cid)  return res.status(400).send("invalid parameters");
     if(!req.body.ch_id)  return res.status(400).send("invalid parameters");
     CourseChapter.findOne({
@@ -76,6 +90,7 @@ router.post('/open', VerifyToken, function(req,res) {
         _id : mongoose.Types.ObjectId(req.body.ch_id),
         act : true
     },function(err,chapter){
+        console.log(chapter);
         if(err) return res.status(500).send("please try again later");
         if(!chapter) return res.status(400).send("No such chapter exists");
         console.log(chapter);
@@ -84,14 +99,21 @@ router.post('/open', VerifyToken, function(req,res) {
         }
         fetchQuizTopics(data,function(err,result){
             if(err) return res.status(500).send('please try again later');
-            // console.log(result);
             res.status(200).send(result);
         })
     })
 })
 
 router.post('/delete', VerifyToken, function(req,res) {
-    console.log(req.body);
+    
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('ch_id','invalid parameters').notEmpty().isValidMongoId();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     CourseChapter.update({cid: req.body.cid, _id : req.body.ch_id},{act : false},function(err,updated_package){
         if(err) return res.status(500).send("Please try again later")
         res.status(200).send(updated_package);
@@ -99,7 +121,14 @@ router.post('/delete', VerifyToken, function(req,res) {
 })
 
 router.post('/edit', VerifyToken, function(req,res) {
-    console.log(req);
+    req.checkBody('name','invalid parameters').notEmpty();
+    req.checkBody('dsc','invalid parameters').notEmpty();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     var chapter = {
         nm  : req.body.name,
         dsc : req.body.dsc,
@@ -112,10 +141,16 @@ router.post('/edit', VerifyToken, function(req,res) {
 })
 
 router.post('/add_quiz', VerifyToken, function(req,res) {
-    console.log(req.body);
-    if(!req.body.cid) return res.status(400).send()
-    if(!req.body.ch_id) return res.status(400).send()
-    if(!req.body.tid) return res.status(400).send()
+
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('ch_id','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('tid','invalid parameters').notEmpty().isValidMongoId();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     CourseChapter.findOne({cid : req.body.cid,_id : req.body.ch_id},function(err,chapter) {
         if(err) return res.status(500).send("Server error");
         var quiz = {
@@ -131,11 +166,17 @@ router.post('/add_quiz', VerifyToken, function(req,res) {
 })
 
 router.post('/add_topic', VerifyToken, function(req,res) {
-    console.log(req.body);
-    if(!req.body.cid) return res.status(400).send()
-    if(!req.body.ch_id) return res.status(400).send()
-    if(!req.body.tid) return res.status(400).send()
-    if(!req.body.type) return res.status(400).send()
+    
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('ch_id','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('tid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('type','invalid parameters').notEmpty();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     CourseChapter.findOne({cid : req.body.cid,_id : req.body.ch_id},function(err,chapter) {
         if(err) return res.status(500).send("Server error");
         var topic = {
@@ -151,10 +192,16 @@ router.post('/add_topic', VerifyToken, function(req,res) {
 })
 
 router.post('/update_cur', VerifyToken, function(req,res) {
-    console.log(req.body);
-    if(!req.body.cid) return res.status(400).send()
-    if(!req.body.ch_id) return res.status(400).send()
-    if(!req.body.cur) return res.status(400).send()
+    
+    req.checkBody('cid','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('ch_id','invalid parameters').notEmpty().isValidMongoId();
+    req.checkBody('cur','invalid parameters').notEmpty().isArray();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     CourseChapter.update({cid: req.body.cid, _id : req.body.ch_id},{
         curriculum : req.body.cur
     },function(err,updated_package){
@@ -207,7 +254,6 @@ function fetchLectureTopics(data,cb){
                 cb(null,data);
             }
         })
-        // CourseLec
     } else {
         return cb(null,data);   
     }

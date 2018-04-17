@@ -4,7 +4,7 @@ const db = require('./db');
 const morgan = require('morgan');
 const fs   = require('fs');
 const configs = require('./config');
-
+const expressValidator = require('express-validator');
 // routes
 const course = require('./routes/course');
 const courseChapter = require('./routes/courseChapter');
@@ -18,6 +18,16 @@ global.__root   = __dirname + '/';
 const morganLogFullFileName = getMorganLoggerFileName();
 const accessLogStream       = fs.createWriteStream(morganLogFullFileName, {flags: 'a'});
 app.use(morgan('{"remoteAddr":":remote-addr","remoteUser":":remote-user","date":":date","method":":method","url":":url","httpVersion":":http-version","status":":status","resp_cont_len":":res[content-length]","referrer":":referrer","user_agent":":user-agent","response_time":":response-time"}', {stream: accessLogStream}));
+
+app.use(expressValidator({
+    customValidators : {
+      isValidMongoId : function(value) {
+        var regex = /^[0-9a-f]{24}$/;
+        return regex.test(value);
+      }
+    }
+  })
+);
 
 app.use(function (req, res, next) {
 

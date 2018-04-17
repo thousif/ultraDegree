@@ -20,11 +20,11 @@ router.get('/list',  VerifyToken,  function (req, res) {
 router.get('/:id', VerifyToken, function (req, res) {
     console.log(req.params);
 
-    // req.checkParams('id',configs.INVALID_PARAMETERS[1]).notEmpty().isValidMongoId();
+    req.checkParams('id','Invalid Parameters').notEmpty().isValidMongoId();
 
-    // if(req.validationErrors()){ 
-    //     return res.status(400).send("Invalid parameters");
-    // }
+    if(req.validationErrors()){ 
+        return res.status(400).send("Invalid parameters");
+    }
 
     Course.findById(req.params.id, function (err, course) {
         if (err) return res.status(500).send("Please try again Later.");

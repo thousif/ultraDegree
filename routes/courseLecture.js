@@ -10,19 +10,23 @@ var Course = require('../models/course');
 var CourseLecture = require('../models/courseLecture');
 
 router.get('/list',  VerifyToken,  function (req, res) {
-    console.log('fetching all quizes from db');
     CourseLecture.find({},function (err, quizes) {
         if (err) return res.status(500).send("There was a problem fetching the quizes.");
         res.status(200).send(quizes);
     });
 });
 
-router.post('/add', VerifyToken, function(req,res) {
-    console.log('adding lecture');
-    console.log(req.body);
-    if(!req.body.nm) return res.status(400).send('Invalid Parameters');
-    if(!req.body.desc) return res.status(400).send('Invalid Parameters');
-    if(!req.body.cid) return res.status(400).send('Invalid Parameters');
+router.post('/add',  VerifyToken,  function(req,res) {
+
+    req.checkBody('nm').notEmpty();
+    req.checkBody('desc').notEmpty();
+    req.checkBody('cid').notEmpty().isValidMongoId();
+
+    if(req.validationErrors()){ 
+        res.status(400).send("Invalid parameters");
+        return 
+    }
+
     var newQuiz = new CourseLecture({
         nm   : req.body.nm,
         dsc  : req.body.desc,
