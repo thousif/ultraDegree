@@ -51,9 +51,9 @@ app.use(function (req, res, next) {
 app.use('/api/users', user);
 app.use('/api/auth', auth);
 app.use('/api/course',course);
-app.use('/api/crs_chapters',courseChapter);
-app.use('/api/crs_quiz',courseQuiz);
-app.use('/api/crs_lecture',courseLecture);
+app.use('/api/crsChapters',courseChapter);
+app.use('/api/crsQuiz',courseQuiz);
+app.use('/api/crsLecture',courseLecture);
 
 app.use(function(req, res, next) {
   next(createError(404));
